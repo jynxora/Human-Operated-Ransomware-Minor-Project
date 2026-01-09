@@ -62,19 +62,6 @@ This project asks:
 
 ---
 
-## Current Status
-
-- ✅ Background research on human-operated ransomware
-- ✅ Study of real-world campaigns (Ryuk, DoppelPaymer, Dharma/Wadhrama, etc.)
-- ✅ Pre-ransom attack chain mapping
-- ✅ Identification of recurring attacker behaviors
-- ⏳ Defensive modeling (in progress)
-- ⏳ Lab-based experimentation
-- ⏳ Prototype development
-
-No claims of a finished solution are made at this stage.
-
----
 
 ## Research Methodology
 
