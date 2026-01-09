@@ -58,40 +58,6 @@ This project asks:
 
 ---
 
-## Repository Structure (Planned & Evolving)
-
-.
-├── research/
-│ ├── incident-reports/
-│ ├── campaign-analysis/
-│ ├── tradecraft-mapping/
-│ └── references.md
-│
-├── notes/
-│ ├── attacker-behaviors.md
-│ ├── detection-failures.md
-│ ├── soc-blindspots.md
-│ └── assumptions.md
-│
-├── design/
-│ ├── threat-model.md
-│ ├── detection-hypotheses.md
-│ └── system-architecture.md
-│
-├── experiments/
-│ ├── lab-setup/
-│ ├── simulations/
-│ └── observations.md
-│
-├── writeups/
-│ ├── background-research.pdf
-│ └── background-research.md
-│
-└── README.md
-
-yaml
-Copy code
-
 > This structure will expand as the project moves from **research → modeling → experimentation → implementation**.
 
 ---
