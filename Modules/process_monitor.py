@@ -13,7 +13,7 @@ from typing import Optional
 from dataclasses import dataclass, asdict
 import wmi
 import time
-
+from signature_scanner import SignatureScanner
 
 def is_admin() -> bool:
     """Check if the script is running with administrator privileges."""
@@ -36,10 +36,11 @@ class ProcessEvent:
     parent_command_line: Optional[str] = None
     risk_hint: Optional[str] = None
     event_type: str = "process_create"
+    signature_hits: Optional[list[str]] = None
     
     def to_json(self) -> str:
         """Convert event to JSON string."""
-        return json.dumps(asdict(self), indent=2)
+        return json.dumps(asdict(self))
 
 
 class ProcessMonitor:
@@ -48,7 +49,7 @@ class ProcessMonitor:
         self.auto_reconnect = auto_reconnect
         self.running = False
         self._setup_logging()
-        
+        self.signature_scanner = SignatureScanner(rules_dir="rules/")
         try:
             self.wmi_connection = wmi.WMI()
         except Exception as e:
@@ -106,8 +107,7 @@ class ProcessMonitor:
         try:
             parent_pid = int(process.ParentProcessId) if process.ParentProcessId else None
             parent_name, parent_cmdline = self._get_parent_process_info(parent_pid)
-            
-            return ProcessEvent(
+            event = ProcessEvent(
                 timestamp=datetime.now().isoformat(),
                 process_name=process.Name,
                 pid=int(process.ProcessId),
@@ -116,8 +116,24 @@ class ProcessMonitor:
                 username=self._get_process_owner(process),
                 executable_path=process.ExecutablePath,
                 parent_process_name=parent_name,
-                parent_command_line=parent_cmdline
+                parent_command_line=parent_cmdline,
             )
+
+            if event.executable_path:
+                try:
+                    signature_hits = self.signature_scanner.scan(event.executable_path)
+                    if signature_hits:
+                        event.signature_hits = signature_hits
+                        event.risk_hint = f"Signature match: {', '.join(signature_hits)}"
+                        self.logger.info(
+                            f"Signature hit detected: {event.process_name} "
+                            f"(PID {event.pid}) → {signature_hits}"
+                        )
+                except Exception as scan_err:
+                    self.logger.debug(
+                        f"Signature scan failed for {event.executable_path}: {scan_err}"
+                    )
+            return event
         except Exception as e:
             self.logger.debug(f"Failed to create event from process: {e}")
             return None
