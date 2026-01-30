@@ -1,4 +1,4 @@
-# Human-Operated Anti-Ransomware  
+# Anti Human-Operated Ransomware  
 ### Background Research, Tradecraft Analysis & Defensive Modeling  
 *(Semester 2 Minor Project — Ongoing)*
 
